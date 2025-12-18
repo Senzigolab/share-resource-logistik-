@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGISHARE - Kirim Bareng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* --- TAMPILAN BARU (PROFESSIONAL LOGISTICS THEME) --- */
+        :root {
+            --primary: #0984e3; /* Biru Profesional (Trust) */
+            --secondary: #fdcb6e; /* Kuning (Logistik/Caution) */
+            --bg-color: #dfe6e9; /* Abu-abu kebiruan */
+            --card-bg: #FFFFFF;
+            --text-main: #2d3436;
+            --danger: #d63031;
+        }
+
+       body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+            color: var(--text-main);
+            
+            /* Background bertema jalanan/transportasi */
+            background-image: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px; /* Lebih tegas kotak untuk kesan bisnis */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            max-width: 480px;
+            width: 100%;
+            border-top: 6px solid var(--primary);
+            position: relative;
+        }
+
+        h1 {
+            color: var(--text-main);
+            text-align: center;
+            margin-top: 5px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 25px;
+            background: #e3f2fd;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            display: block; 
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        
+        label { 
+            display: block; 
+            margin-bottom: 6px; 
+            font-weight: 600; 
+            color: var(--text-main); 
+            font-size: 0.9rem;
+        }
+
+        input[type="text"], select, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #b2bec3;
+            background-color: #f5f6fa;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: 0.2s;
+        }
+        
+        input:focus, select:focus { 
+            border-color: var(--primary); 
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
+        }
+
+        /* Checkbox Area untuk Handling Khusus */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff3cd; /* Kuning peringatan */
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        input[type="checkbox"] { 
+            width: 18px; 
+            height: 18px; 
+            accent-color: var(--danger); 
+            cursor: pointer;
+        }
+
+        .hidden { display: none; }
+
+        .btn-kirim {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary); 
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-kirim:hover { 
+            background: #0652DD; 
+        }
+
+        .credit {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.7rem;
+            color: #636e72;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>LOGISHARE</h1>
+        <p class="subtitle">📦 Resource Sharing & Delivery System</p>
+        
+        <div class="form-group">
+            <label><i class="fas fa-user-tag" style="color:var(--primary)"></i> Nama Pengirim</label>
+            <input type="text" id="nama" placeholder="Nama Anda...">
+        </div>
+        
+        <div class="form-group">
+            <label><i class="fas fa-map-marked-alt" style="color:var(--primary)"></i> Lokasi Jemput & Antar</label>
+            <input type="text" id="alamat" placeholder="Contoh: Kosan A ke Stasiun Lempuyangan">
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-box-open" style="color:var(--primary)"></i> Jenis Muatan (Payload)</label>
+            <select id="kategori_barang" onchange="cekMuatan()">
+                <option value="0">-- Pilih Jenis Barang --</option>
+                <option value="1">📄 Dokumen / Surat (Ringan)</option>
+                <option value="2">🍲 Makanan / Catering (Butuh Cepat)</option>
+                <option value="3">📦 Paket Kardus Sedang (Medium)</option>
+                <option value="4">🖥️ Elektronik / Barang Besar (Berat)</option>
+            </select>
+        </div>
+
+        <div id="zona-handling" class="hidden">
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="is_fragile" onchange="cekFragile()">
+                <label for="is_fragile" style="margin:0; color: #856404; font-size: 0.9rem;">
+                    Barang Pecah Belah / Mudah Rusak?
+                </label>
+            </div>
+            
+            <div id="konfirmasi-packing" class="hidden form-group checkbox-group" style="background: #d4edda; border-color: #c3e6cb;">
+                <input type="checkbox" id="yakin_aman" style="accent-color: #28a745;">
+                <label for="yakin_aman" style="margin:0; font-size: 0.9rem; color: #155724;">
+                    Saya sudah mempacking dengan aman (Bubble wrap/Kayu).
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-truck-loading" style="color:var(--primary)"></i> Rekomendasi Armada (Sharing)</label>
+            <select id="armada">
+                <option value="0">-- Pilih Jenis Barang Dulu --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-route" style="color:var(--primary)"></i> Estimasi Jarak Antar</label>
+            <select id="jarak">
+                <option value="0">-- Pilih Jarak --</option>
+                <option value="5000">Dekat (< 3 KM) - Rp 5.000</option>
+                <option value="10000">Sedang (3 - 7 KM) - Rp 10.000</option>
+                <option value="15000">Jauh (7 - 12 KM) - Rp 15.000</option>
+                <option value="25000">Luar Ring Road (> 12 KM) - Rp 25.000</option>
+            </select>
+        </div>
+
+        <button class="btn-kirim" onclick="requestResource()">
+            <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Request Pengiriman
+        </button>
+
+        <div class="credit">System by Erynd - Based on JAMstack Architecture</div>
+    </div>
+
+    <script>
+        // --- KONFIGURASI ADMIN/DRIVER UTAMA ---
+        const NOMOR_WA_ADMIN = "6281234567890"; // Ganti nomor kamu
+
+        // DATA LOGISTIK (Menggantikan Data Menu)
+        // Kunci: 1 (Dokumen), 2 (Makanan), 3 (Paket), 4 (Elektronik)
+        const armadaData = {
+            1: [ 
+                { nama: "Motor (Sharing Bagasi)", harga: 0 }, 
+                { nama: "Sepeda Kurir (Eco)", harga: 0 } 
+            ],
+            2: [ 
+                { nama: "Motor (Insulated Bag)", harga: 2000 }, 
+                { nama: "Driver Prioritas", harga: 5000 } 
+            ],
+            3: [ 
+                { nama: "Motor (Gendong Depan)", harga: 3000 }, 
+                { nama: "Nebeng Mobil Orang", harga: 5000 } 
+            ],
+            4: [ 
+                { nama: "Mobil Blindvan (Sharing)", harga: 15000 }, 
+                { nama: "Pickup (Charter)", harga: 50000 } 
+            ]
+        };
+
+        const statusData = {
+            1: "Dokumen aman, anti lecek! 📄",
+            2: "Makanan sampai hangat, perut selamat. 🍜",
+            3: "Paket mendarat dengan mulus. 📦",
+            4: "Barang berat biar kami yang angkat. 💪"
+        };
+
+        function cekMuatan() {
+            let kategoriVal = document.getElementById("kategori_barang").value;
+            let selectArmada = document.getElementById("armada");
+            let zonaHandling = document.getElementById("zona-handling");
+            
+            // Reset Dropdown Armada
+            selectArmada.innerHTML = '<option value="0">-- Pilih Armada --</option>';
+
+            // Logika Barang Pecah Belah/Cair (Mirip logika 'Pedas')
+            // Jika kategori 2 (Makanan) atau 4 (Elektronik), tampilkan warning handling
+            if (kategoriVal == 2 || kategoriVal == 4) { 
+                zonaHandling.classList.remove("hidden"); 
+            } else { 
+                zonaHandling.classList.add("hidden"); 
+                // Reset checkbox jika disembunyikan
+                document.getElementById("is_fragile").checked = false;
+                document.getElementById("konfirmasi-packing").classList.add("hidden");
+            }
+
+            // Populate Armada berdasarkan kategori
+            if (armadaData[kategoriVal]) {
+                armadaData[kategoriVal].forEach((item) => {
+                    let option = document.createElement("option");
+                    // Value di sini adalah "Biaya Tambahan Armada"
+                    option.value = item.harga; 
+                    option.text = item.nama + (item.harga > 0 ? " (+ Rp " + item.harga + ")" : " (Standar)");
+                    option.setAttribute("data-armada", item.nama);
+                    selectArmada.add(option);
+                });
+            }
+        }
+
+        function cekFragile() {
+            let isFragile = document.getElementById("is_fragile").checked;
+            let divKonfirmasi = document.getElementById("konfirmasi-packing");
+            
+            if (isFragile) divKonfirmasi.classList.remove("hidden");
+            else {
+                divKonfirmasi.classList.add("hidden");
+                document.getElementById("yakin_aman").checked = false;
+            }
+        }
+
+        function requestResource() {
+            let nama = document.getElementById("nama").value;
+            let alamat = document.getElementById("alamat").value;
+            let kategori = parseInt(document.getElementById("kategori_barang").value);
+            
+            if (!nama || !alamat) { alert("Data pengirim dan lokasi wajib diisi ya! ⚠️"); return; }
+            if (kategori === 0) { alert("Jenis barang belum dipilih! 📦"); return; }
+
+            // Validasi Barang Pecah Belah (Pengganti Maag)
+            if (kategori == 2 || kategori == 4) { // Makanan atau Elektronik
+                let isFragile = document.getElementById("is_fragile").checked;
+                let isYakin = document.getElementById("yakin_aman").checked;
+                
+                // Jika dicentang pecah belah TAPI belum dicentang 'sudah packing'
+                if (isFragile && !isYakin) {
+                    alert("Mohon pastikan barang sudah dipacking aman sebelum request armada! 🙏");
+                    return;
+                }
+            }
+
+            // Ambil Data Armada
+            let selectArmada = document.getElementById("armada");
+            let biayaArmada = parseInt(selectArmada.value);
+            let namaArmada = selectArmada.options[selectArmada.selectedIndex].getAttribute("data-armada");
+
+            if (isNaN(biayaArmada)) { alert("Pilih Armada dulu!"); return; }
+
+            // Ambil Data Jarak (Pengganti Minum)
+            let selectJarak = document.getElementById("jarak");
+            let biayaJarak = parseInt(selectJarak.value);
+            let infoJarak = selectJarak.options[selectJarak.selectedIndex].text;
+
+            if (biayaJarak === 0) { alert("Estimasi jarak belum dipilih!"); return; }
+
+            // Info Handling di WA
+            let infoHandling = "Standar";
+            let isFragile = document.getElementById("is_fragile").checked;
+            if (isFragile) {
+                infoHandling = "⚠️ FRAGILE / MUDAH RUSAK (Sudah Packing)";
+            }
+
+            let totalEstimasi = biayaArmada + biayaJarak;
+            let statusQuote = statusData[kategori];
+
+            // Format Pesan WA Logistik
+            let pesanWA = `Halo Admin *LOGISHARE*, saya butuh bantuan pengiriman! 🚛%0a%0a` +
+                          `👤 Pengirim: *${nama}*%0a` +
+                          `📍 Rute: ${alamat}%0a` +
+                          `--------------------------------%0a` +
+                          `📦 Barang: *${namaArmada}*%0a` +
+                          `📏 Jarak: ${infoJarak}%0a` +
+                          `🛡️ Handling: ${infoHandling}%0a` +
+                          `💰 *Estimasi Biaya: Rp ${totalEstimasi}*%0a` +
+                          `--------------------------------%0a` +
+                          `🚀 _"${statusQuote}"_%0a%0a` +
+                          `Mohon dicek ketersediaan driver ya!`;
+
+            let link = `https://wa.me/${NOMOR_WA_ADMIN}?text=${pesanWA}`;
+            window.open(link, '_blank');
+        }
+    </script>
+</body>
+</html>
