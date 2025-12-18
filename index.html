@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOGISHARE - Kirim Bareng</title>
+    <title>LOGISHARE - Kirim Barang</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* --- TAMPILAN BARU (PROFESSIONAL LOGISTICS THEME) --- */
         :root {
-            --primary: #0984e3; /* Biru Profesional (Trust) */
-            --secondary: #fdcb6e; /* Kuning (Logistik/Caution) */
-            --bg-color: #dfe6e9; /* Abu-abu kebiruan */
+            --primary: #0984e3;
+            --bg-color: #dfe6e9;
             --card-bg: #FFFFFF;
             --text-main: #2d3436;
-            --danger: #d63031;
+            --success: #00b894; /* Warna hijau untuk tombol GPS */
         }
 
        body {
@@ -27,13 +25,279 @@
             margin: 0;
             min-height: 100vh;
             color: var(--text-main);
-            
-            /* Background bertema jalanan/transportasi */
-            background-image: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop');
+            background-image: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1616432043562-3671ea2e5242?q=80&w=1887&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            max-width: 480px;
+            width: 100%;
+            border-top: 6px solid var(--primary);
+        }
+
+        h1 {
+            color: var(--text-main);
+            text-align: center;
+            margin-top: 5px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 25px;
+            background: #e3f2fd;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            display: block; 
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        
+        label { 
+            display: block; 
+            margin-bottom: 6px; 
+            font-weight: 600; 
+            color: var(--text-main); 
+            font-size: 0.9rem;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #b2bec3;
+            background-color: #f5f6fa;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            box-sizing: border-box; /* Agar padding tidak merusak lebar */
+        }
+        
+        textarea { resize: vertical; height: 80px; }
+
+        input:focus, select:focus, textarea:focus { 
+            border-color: var(--primary); 
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
+        }
+
+        /* Tombol GPS */
+        .btn-gps {
+            background-color: #55efc4;
+            color: #006266;
+            border: 1px dashed #00b894;
+            padding: 10px;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-gps:hover { background-color: #00b894; color: white; }
+        .gps-success { background-color: #00b894; color: white; border-style: solid; }
+
+        .btn-kirim {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary); 
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-kirim:hover { background: #0652DD; }
+
+        .credit {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.7rem;
+            color: #636e72;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>LOGISHARE</h1>
+        <p class="subtitle">📍 Layanan Antar Jemput Pelosok</p>
+        
+        <div class="form-group">
+            <label>👤 Nama Pengirim</label>
+            <input type="text" id="nama" placeholder="Nama panggilan...">
+        </div>
+        
+        <div class="form-group">
+            <label style="color:#d63031;">🚩 Lokasi Penjemputan (Asal)</label>
+            
+            <button class="btn-gps" id="btn-gps" onclick="ambilLokasiGPS()">
+                <i class="fas fa-crosshairs"></i> Otomatis Deteksi Lokasi Saya
+            </button>
+            <input type="hidden" id="google_maps_link"> <textarea id="alamat_jemput" placeholder="Detail Alamat: Nama Jalan, RT/RW, Patokan (Depan Gapura/Warna Rumah)..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label style="color:#0984e3;">🏁 Lokasi Tujuan (Antar)</label>
+            <textarea id="alamat_antar" placeholder="Mau diantar kemana? Tulis detail desa/kecamatannya..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>📦 Apa yang mau dikirim?</label>
+            <select id="kategori_barang">
+                <option value="0">-- Pilih Jenis Barang --</option>
+                <option value="Dokumen">📄 Dokumen / Surat Penting</option>
+                <option value="Makanan">🍲 Makanan / Catering</option>
+                <option value="Barang Sedang">📦 Paket Kardus / Belanjaan</option>
+                <option value="Barang Berat">🖥️ Elektronik / Karung Beras</option>
+            </select>
+            <small style="color: grey; font-size: 0.75rem;">*Kendaraan akan disesuaikan oleh kurir.</small>
+        </div>
+
+        <div class="form-group">
+            <label>📏 Estimasi Jarak Tempuh</label>
+            <select id="jarak">
+                <option value="0">-- Pilih Jarak --</option>
+                <option value="5000">Dekat (< 2 KM) - Rp 5.000</option>
+                <option value="8000">Sedang (2 - 5 KM) - Rp 8.000</option>
+                <option value="12000">Jauh (5 - 8 KM) - Rp 12.000</option>
+                <option value="20000">Pelosok / Luar Desa (> 8 KM) - Rp 20.000</option>
+            </select>
+        </div>
+
+        <button class="btn-kirim" onclick="kirimPesan()">
+            <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Hubungi Kurir
+        </button>
+
+        <div class="credit">System by Erynd</div>
+    </div>
+
+    <script>
+        const NOMOR_WA_ADMIN = "6287846644813"; // Ganti nomor admin
+
+        // Fungsi Ambil GPS
+        function ambilLokasiGPS() {
+            const btn = document.getElementById("btn-gps");
+            const inputMaps = document.getElementById("google_maps_link");
+
+            if (navigator.geolocation) {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sedang mendeteksi...';
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Browser HP kamu tidak mendukung GPS.");
+            }
+        }
+
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const long = position.coords.longitude;
+            const link = `https://www.google.com/maps?q=${lat},${long}`;
+            
+            // Simpan link di input tersembunyi
+            document.getElementById("google_maps_link").value = link;
+            
+            // Ubah tampilan tombol biar user tau berhasil
+            const btn = document.getElementById("btn-gps");
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> Lokasi Terkunci!';
+            btn.classList.add("gps-success");
+            
+            // Opsional: Isi otomatis ke kolom teks alamat
+            document.getElementById("alamat_jemput").value += " (Lokasi Sesuai GPS)";
+        }
+
+        function showError(error) {
+            const btn = document.getElementById("btn-gps");
+            btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Gagal Deteksi (Isi Manual)';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("Izin lokasi ditolak. Aktifkan GPS di pengaturan browser ya.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Sinyal GPS tidak ditemukan.");
+                    break;
+                case error.TIMEOUT:
+                    alert("Waktu habis saat mencari sinyal.");
+                    break;
+                default:
+                    alert("Terjadi kesalahan sistem GPS.");
+            }
+        }
+
+        function kirimPesan() {
+            let nama = document.getElementById("nama").value;
+            let jemput = document.getElementById("alamat_jemput").value;
+            let antar = document.getElementById("alamat_antar").value;
+            let barang = document.getElementById("kategori_barang").value;
+            let mapsLink = document.getElementById("google_maps_link").value;
+            
+            // Validasi
+            if (!nama || !jemput || !antar) { 
+                alert("Harap lengkapi Nama, Alamat Jemput, dan Tujuan! 😊"); 
+                return; 
+            }
+            if (barang == "0") { alert("Jenis barang belum dipilih!"); return; }
+
+            // Ambil Harga Jarak
+            let selectJarak = document.getElementById("jarak");
+            let harga = parseInt(selectJarak.value);
+            let infoJarak = selectJarak.options[selectJarak.selectedIndex].text; // Ambil teks opsi
+
+            if (harga === 0) { alert("Pilih perkiraan jarak dulu ya!"); return; }
+
+            // Susun Pesan WA
+            let pesanWA = `Halo Kurir *LOGISHARE*, ada orderan masuk! 🛵%0a%0a` +
+                          `👤 *${nama}*%0a` +
+                          `--------------------------------%0a` +
+                          `🚩 *JEMPUT:*%0a${jemput}%0a`;
+            
+            // Jika ada link maps, tambahkan
+            if (mapsLink) {
+                pesanWA += `📍 *Maps:* ${mapsLink}%0a`;
+            }
+
+            pesanWA += `--------------------------------%0a` +
+                       `🏁 *ANTAR:*%0a${antar}%0a` +
+                       `--------------------------------%0a` +
+                       `📦 Barang: ${barang}%0a` +
+                       `📏 Jarak: ${infoJarak}%0a` +
+                       `💰 *Total Ongkir: Rp ${harga}*%0a%0a` +
+                       `*Catatan:* Mohon bawa kendaraan yang sesuai dengan barang & kondisi jalan.`;
+
+            let link = `https://wa.me/${NOMOR_WA_ADMIN}?text=${pesanWA}`;
+            window.open(link, '_blank');
+        }
+    </script>
+</body>
+</html>
 
         .container {
             background-color: var(--card-bg);
@@ -357,4 +621,5 @@
     </script>
 </body>
 </html>
+
 
